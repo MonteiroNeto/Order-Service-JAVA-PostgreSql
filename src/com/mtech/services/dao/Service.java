@@ -10,8 +10,8 @@ public class Service {
     private final String host = "localhost";
     private final String database = "dbinfox";
     private final int port = 5432;
-    private final String user = "MeuUserNoBanco";
-    private final String pass = "MinhaSenhaDoBanco";
+    private final String user = "meuUsuarioNoBanco";
+    private final String pass = "minhaSenha";
 
 
     private String url = "jdbc:postgresql://%s:%d/%s";

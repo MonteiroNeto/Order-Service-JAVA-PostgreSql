@@ -23,6 +23,8 @@ public class TblReference {
 		public static final String COLUMN_TECNICO = "tecnico";
 		public static final String COLUMN_VALOR = "valor";
 		public static final String COLUMN_ID_CLIENTE = "idcli";
+		public static final String COLUMN_STATUS = "status";
+		public static final String COLUMN_TYPE_SERVICE = "tipo_servico";
 
 	}
 

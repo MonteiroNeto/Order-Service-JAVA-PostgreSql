@@ -183,9 +183,10 @@ public class DaoUser {
 
 	/***** FIND USERS FOR NAME *****/
 	public ResultSet findUserForName(String name) {
-		String sql = "SELECT " + tblReference.COLUMN_ID_USER + "," + tblReference.COLUMN_NAME + ","
-				+ tblReference.COLUMN_PHONE + "," + tblReference.COLUMN_LOGIN + "," + tblReference.COLUMN_PERFIL
-				+ " FROM " + tblReference.TBL_NAME + " WHERE " + tblReference.COLUMN_NAME + " like ? ;";
+		String titleAndColuns = titleTableRefactory();
+
+		String sql = "SELECT " + titleAndColuns + " FROM " + tblReference.TBL_NAME + " WHERE "
+				+ tblReference.COLUMN_NAME + " like ? ;";
 
 		try {
 			pStatement = connection.prepareStatement(sql);
@@ -200,6 +201,20 @@ public class DaoUser {
 			return null;
 		}
 
+	}
+
+	private String titleTableRefactory() {
+		String title = "";
+
+		String id = tblReference.COLUMN_ID_USER + " as " + mStrings.ID + ", ";
+		String name = tblReference.COLUMN_NAME + " as " + mStrings.NAME + ", ";
+		String phone = tblReference.COLUMN_PHONE + " as " + mStrings.PHONE + ", ";
+		String login = tblReference.COLUMN_LOGIN + " as " + mStrings.LOGIN + ", ";
+		String perfil = tblReference.COLUMN_PERFIL + " as " + mStrings.PERFIL;
+
+		title = id + name + phone + login + perfil;
+
+		return title;
 	}
 
 }

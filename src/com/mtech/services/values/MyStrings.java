@@ -62,9 +62,20 @@ public class MyStrings {
 	public static final String EMAIL = "Email";
 	public static final String REQUIRED_FIELDS = "Required fields";
 	public static final String SELECT_A_CLIENT = "select a client";
-	
+	public static final String ID_CLIENT = "ID CLIENT";
+	public static final String BUDGET = "Budget";
+	public static final String ORDER_SERVICE = "Order of Service";
+	public static final String NUMBER_OS = "Nº OS";
+	public static final String EQUIPMENT = "Equipment";
+	public static final String DEFECT = "Defect";
+	public static final String TECHNICIAN = "Technician";
+	public static final String DATE = "Date";
+	public static final String PRICE = "Price";
+	public static final String PRINT = "Print";
 
 	public static final String[] LIST_PERFIL = { "user", "admin" };
+	public static final String[] LIST_STATUS_OS = { "ENTREGA OK", "Orçamento Reprovado", "Aguardando Aprovação",
+			"Aguardando Peças", "Abandonado pelo cliente", "Na Bancada", "Retornou" };
 
 	/*
 	 * LINKS DE APOIO

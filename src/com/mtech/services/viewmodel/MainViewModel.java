@@ -27,20 +27,23 @@ public class MainViewModel {
 		}
 
 	}
-	
-	
+
 	public void openAboutActivity() {
 		new OpenActivity().openAboutActivity();
 	}
-	
-	
+
 	public void openUserFragment(JDesktopPane pane) {
 		new OpenFragment(pane).openUserFragment();
-		
+
 	}
-	
-	public void openClientFragment(JDesktopPane pane ) {
-		new OpenFragment(pane).openClientFragment();;
+
+	public void openClientFragment(JDesktopPane pane) {
+		new OpenFragment(pane).openClientFragment();
+		;
 	}
-	
+
+	public void openOsFragment(JDesktopPane pane) {
+		new OpenFragment(pane).openOsFragment();
+	}
+
 }

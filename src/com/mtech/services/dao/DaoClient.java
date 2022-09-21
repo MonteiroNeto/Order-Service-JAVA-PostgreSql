@@ -16,7 +16,10 @@ public class DaoClient {
 	private MyStrings mStrings = new MyStrings();
 
 	public ResultSet findClientForName(String name) {
-		String sql = "SELECT * FROM " + tblReference.TBL_NAME + " WHERE " + tblReference.COLUMN_NAME_CLI + " like ? ;";
+		String title = titleTableRefactory();
+
+		String sql = "SELECT " + title + " FROM " + tblReference.TBL_NAME + " WHERE " + tblReference.COLUMN_NAME_CLI
+				+ " like ? ;";
 
 		try {
 
@@ -101,6 +104,20 @@ public class DaoClient {
 			return e.toString();
 		}
 
+	}
+
+	private String titleTableRefactory() {
+		String title = "";
+
+		String id = tblReference.COLUMN_ID_CLI + " as " + mStrings.ID + ", ";
+		String name = tblReference.COLUMN_NAME_CLI + " as " + mStrings.NAME + ", ";
+		String adress = tblReference.COLUMN_ADDRES_CLI + " as " + mStrings.ADRESS + ", ";
+		String phone = tblReference.COLUMN_PHONE_CLI + " as " + mStrings.PHONE + ", ";
+		String email = tblReference.COLUMN_EMAIL_CLI + " as " + mStrings.EMAIL + " ";
+
+		title = id + name + adress + phone + email;
+
+		return title;
 	}
 
 }

@@ -11,8 +11,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 import com.mtech.services.model.Client;
+import com.mtech.services.util.LockTableEdit;
 import com.mtech.services.values.MyStrings;
 import com.mtech.services.viewmodel.ClientsFragmentViewModel;
 
@@ -341,12 +343,14 @@ public class ClientFragment extends JInternalFrame {
 	}
 
 	private void initTableClient() {
-		String title[] = { mStrings.ID, mStrings.NAME, mStrings.ADRESS, mStrings.PHONE, mStrings.EMAIL };
-		String body[][] = {};
-
-		table = new JTable(body, title);
+		table = new JTable();
 		table.setBounds(5, 17, 1009, 129);
 
+		//Metodo para bloquear a edicao das celulas e os movimentos das colunas e setar o titulo a tabela
+		String title[] = { mStrings.ID, mStrings.NAME, mStrings.ADRESS, mStrings.PHONE, mStrings.EMAIL };
+		table = new LockTableEdit(table, title).lockTable();
+
+		table.setBounds(5, 17, 1009, 129);
 		panelTable = new JScrollPane(table);
 		panelTable.setBorder(
 				new TitledBorder(null, mStrings.CLIENT + "s", TitledBorder.LEADING, TitledBorder.TOP, null, null));

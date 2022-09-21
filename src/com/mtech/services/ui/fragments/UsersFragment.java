@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.JInternalFrame;
 
 import com.mtech.services.model.User;
+import com.mtech.services.util.LockTableEdit;
 import com.mtech.services.values.MyStrings;
 import com.mtech.services.viewmodel.UserFragmentViewModel;
 
@@ -75,8 +76,7 @@ public class UsersFragment extends JInternalFrame {
 
 	}
 
-	
-	//CLick no item da tabela
+	// CLick no item da tabela
 	private void onCLickItemTable() {
 
 		table.addMouseListener(new MouseListener() {
@@ -103,23 +103,22 @@ public class UsersFragment extends JInternalFrame {
 
 			public void mouseClicked(MouseEvent arg0) {
 
-				//Pegar posicao da linha na tabela
+				// Pegar posicao da linha na tabela
 				int position = table.getSelectedRow();
-				//pegar o id de acordo com a posicao da linha na tabela
+				// pegar o id de acordo com a posicao da linha na tabela
 				int idUser = (Integer) table.getModel().getValueAt(position, 0);
-				//buscar usuario pelo id
+				// buscar usuario pelo id
 				user = new UserFragmentViewModel().findUserForId(idUser);
 
-				//enviar os dados do usuario para os edit TExt
+				// enviar os dados do usuario para os edit TExt
 				setTextToEditText(user);
 
 			}
 		});
 
 	}
-	
-	
-	//Pesquisar usuario pelo nome de acordo com que for digitando
+
+	// Pesquisar usuario pelo nome de acordo com que for digitando
 	private void onClikedtNameRelease() {
 		edtName.addKeyListener(new KeyListener() {
 
@@ -163,8 +162,7 @@ public class UsersFragment extends JInternalFrame {
 
 	}
 
-	
-	//Validar ID se o caracter é um INTEIRO
+	// Validar ID se o caracter é um INTEIRO
 	private int validateIdUser() {
 
 		try {
@@ -243,9 +241,8 @@ public class UsersFragment extends JInternalFrame {
 		}
 
 	}
-	
-	
-	//validar se os edit text estão vazios
+
+	// validar se os edit text estão vazios
 	private String validateEmptyField() {
 		String messenger = "";
 
@@ -287,8 +284,7 @@ public class UsersFragment extends JInternalFrame {
 
 	}
 
-	
-	//Setar os dados do usuario nos campos do formulario
+	// Setar os dados do usuario nos campos do formulario
 	private void setTextToEditText(User user) {
 		String[] perfis = mStrings.LIST_PERFIL;
 		if (user != null) {
@@ -423,11 +419,12 @@ public class UsersFragment extends JInternalFrame {
 	}
 
 	private void initTableUser() {
-		String title[] = { mStrings.ID, mStrings.NAME, mStrings.PHONE, mStrings.LOGIN, mStrings.PERFIL };
-		String body[][] = {};
-
-		table = new JTable(body, title);
+		table = new JTable();
 		table.setBounds(5, 17, 1009, 129);
+
+		//Metodo para bloquear a edicao das celulas e os movimentos das colunas e setar o titulo a tabela
+		String title[] = { mStrings.ID, mStrings.NAME, mStrings.PHONE, mStrings.LOGIN, mStrings.PERFIL };
+		table = new LockTableEdit(table, title).lockTable();
 
 		panelTable = new JScrollPane(table);
 		panelTable.setBorder(

@@ -74,7 +74,19 @@ public class MainActivity extends JFrame {
 		onClickAbout();
 		onClickUsers();
 		onCLickClient();
+		onClickOs();
 
+	}
+
+	private void onClickOs() {
+		iMnRegisOs.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				mainViewModel.openOsFragment(pane);
+				
+			}
+		});
+		
 	}
 
 	private void onCLickClient() {
