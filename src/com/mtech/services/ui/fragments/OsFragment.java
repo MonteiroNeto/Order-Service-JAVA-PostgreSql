@@ -1,14 +1,19 @@
 package com.mtech.services.ui.fragments;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.ResultSet;
+import java.sql.Savepoint;
 
 import javax.swing.JInternalFrame;
 
+import com.mtech.services.model.Os;
+import com.mtech.services.util.GetDate;
 import com.mtech.services.util.LockTableEdit;
 import com.mtech.services.values.MyStrings;
 import com.mtech.services.viewmodel.OsFragmentViewModel;
@@ -17,10 +22,10 @@ import net.proteanit.sql.DbUtils;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -35,7 +40,7 @@ public class OsFragment extends JInternalFrame {
 	private MyStrings mStrings = new MyStrings();
 	private JTextField editTextIdOs;
 	private JTextField editTextDate;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup radioBtnGroup = new ButtonGroup();
 	private JTextField editTextFindClient;
 	private JTextField editTextIdClient;
 	private JTable table;
@@ -49,6 +54,8 @@ public class OsFragment extends JInternalFrame {
 	private JButton btnEdit;
 	private JButton btnRemove;
 	private JButton btnPrint;
+	private JComboBox comboBoxStatus;
+	private JRadioButton radioBtnBudget, radioBtnOrderService;
 
 	/**
 	 * Launch the application.
@@ -73,6 +80,161 @@ public class OsFragment extends JInternalFrame {
 		initComponents();
 		onClickEditClientRelease();
 		onClickTablePosition();
+		onClickBtnSaveOs();
+		setDate();
+		onclickBtnFindOs();
+
+	}
+
+	private void onclickBtnFindOs() {
+		btnFind.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				findOs();
+
+			}
+		});
+
+	}
+
+	protected void findOs() {
+		JOptionPane jPane = new JOptionPane();
+
+		String idForValidation = jPane.showInputDialog(null, mStrings.ENTER_OS_NUMBER);
+
+		int idOs = validationId(idForValidation);
+
+		if (idOs > 0) {
+
+			Os osReceived = new OsFragmentViewModel().findOs(idOs);
+			if (osReceived != null) {
+				sendTextToForm(osReceived);
+			}
+
+		} else if (idForValidation != null) {
+			JOptionPane.showMessageDialog(null, mStrings.INVALID_ID);
+		}
+
+	}
+
+	private void sendTextToForm(Os os) {
+		// desabilitar componentes que não podem ser usado durante a edicao
+		btnAdd.setEnabled(false);
+		table.setVisible(false);
+		editTextFindClient.setEnabled(false);
+
+		// enviar os dados para o formulario
+		editTextIdOs.setText(String.valueOf(os.getId()));
+		editTextDate.setText(os.getData());
+		if (os.getServiceType() == 1) {
+			radioBtnBudget.setSelected(true);
+		} else {
+			radioBtnOrderService.setSelected(true);
+		}
+		editTextIdClient.setText(String.valueOf(os.getIdCli()));
+		comboBoxStatus.setSelectedIndex(os.getStatus());
+		editTextEquipment.setText(os.getEquipment());
+		editTextDefect.setText(os.getDefect());
+		editTextService.setText(os.getService());
+		editTextTechnician.setText(os.getTechnician());
+		editTextPrice.setText(String.valueOf(os.getPrice()));
+
+	}
+
+	private int validationId(String idForValidation) {
+		int idOs = 0;
+
+		try {
+
+			idOs = Integer.parseInt(idForValidation);
+			return idOs;
+		} catch (Exception e) {
+			return 0;
+		}
+
+	}
+
+	private void clearForm() {
+		editTextIdOs.setText("");
+		radioBtnBudget.setSelected(false);
+		radioBtnOrderService.setSelected(false);
+		editTextIdClient.setText("");
+		editTextFindClient.setEnabled(true);
+		btnAdd.setEnabled(true);
+		table.setVisible(true);
+		editTextEquipment.setText("");
+		editTextDefect.setText("");
+		editTextService.setText("");
+		editTextTechnician.setText("");
+		editTextPrice.setText("");
+
+	}
+
+	private void setDate() {
+		editTextDate.setText(new GetDate().getFormatDate());
+
+	}
+
+	private void onClickBtnSaveOs() {
+		btnAdd.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				save();
+			}
+
+		});
+
+	}
+
+	private void save() {
+		String message = validateForm();
+
+		if (message.equals("")) {
+			Os os = getOsEditOfForm();
+			new OsFragmentViewModel().addOs(os);
+		} else {
+			JOptionPane.showConfirmDialog(null, message, mStrings.ERROR, JOptionPane.CLOSED_OPTION);
+		}
+
+	}
+
+	private String validateForm() {
+		String message = "";
+
+		if (editTextIdClient.getText().isBlank()) {
+			message = mStrings.SELECT_A_CLIENT;
+		} else if (!radioBtnBudget.isSelected() && !radioBtnOrderService.isSelected()) {
+			message = mStrings.SELECT_SERVICE_TYPE;
+		} else if (comboBoxStatus.getSelectedIndex() == 0) {
+			message = mStrings.SELECT_STATUS_OS;
+		} else if (editTextEquipment.getText().isBlank()) {
+			message = mStrings.EQUIPMENT_FIELD_IS_EMPTY;
+		} else if (editTextDefect.getText().isBlank()) {
+			message = mStrings.DEFECT_FIELD_IS_EMPTY;
+		} else {
+			message = "";
+		}
+
+		return message;
+
+	}
+
+	private Os getOsEditOfForm() {
+		double price = Double.parseDouble(editTextPrice.getText().replace(",", "."));
+		int type_service = 1;
+
+		// obter a posicao do radio button que esta selecionado
+		if (radioBtnBudget.isSelected()) {
+			type_service = 1;
+		} else if (radioBtnOrderService.isSelected()) {
+			type_service = 2;
+		}
+
+		Os os = new Os(editTextEquipment.getText(), editTextDefect.getText(), editTextService.getText(),
+				editTextTechnician.getText(), price, Integer.parseInt(editTextIdClient.getText()),
+				comboBoxStatus.getSelectedIndex(), type_service);
+
+		return os;
 	}
 
 	private void onClickTablePosition() {
@@ -148,7 +310,7 @@ public class OsFragment extends JInternalFrame {
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.LIGHT_GRAY);
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBounds(23, 12, 382, 159);
+		panel.setBounds(23, 12, 387, 173);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -157,30 +319,36 @@ public class OsFragment extends JInternalFrame {
 		panel.add(lblNewLabel);
 
 		JLabel lblData = new JLabel(mStrings.DATE);
-		lblData.setBounds(230, 31, 70, 15);
+		lblData.setBounds(241, 31, 70, 15);
 		panel.add(lblData);
 
 		editTextIdOs = new JTextField();
 		editTextIdOs.setEditable(false);
+		editTextIdOs.setHorizontalAlignment(JTextField.CENTER);
 		editTextIdOs.setBounds(53, 58, 100, 25);
 		panel.add(editTextIdOs);
 		editTextIdOs.setColumns(10);
 
 		editTextDate = new JTextField();
 		editTextDate.setEditable(false);
+		editTextDate.setHorizontalAlignment(JTextField.CENTER);
 		editTextDate.setColumns(10);
-		editTextDate.setBounds(206, 58, 123, 25);
+		editTextDate.setBounds(178, 58, 197, 25);
 		panel.add(editTextDate);
 
-		JRadioButton radioBtnBudget = new JRadioButton(mStrings.BUDGET);
-		buttonGroup.add(radioBtnBudget);
-		radioBtnBudget.setBounds(31, 112, 149, 23);
+		radioBtnBudget = new JRadioButton(mStrings.BUDGET);
+		radioBtnGroup.add(radioBtnBudget);
+		radioBtnBudget.setBounds(25, 128, 149, 23);
 		panel.add(radioBtnBudget);
 
-		JRadioButton radioBtnOrderService = new JRadioButton(mStrings.ORDER_SERVICE);
-		buttonGroup.add(radioBtnOrderService);
-		radioBtnOrderService.setBounds(208, 112, 149, 23);
+		radioBtnOrderService = new JRadioButton(mStrings.ORDER_SERVICE);
+		radioBtnGroup.add(radioBtnOrderService);
+		radioBtnOrderService.setBounds(202, 128, 149, 23);
 		panel.add(radioBtnOrderService);
+
+		JLabel lblNewLabel_1 = new JLabel("*" + mStrings.SERVICE_TYPE);
+		lblNewLabel_1.setBounds(135, 105, 138, 15);
+		panel.add(lblNewLabel_1);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
@@ -208,6 +376,7 @@ public class OsFragment extends JInternalFrame {
 		editTextIdClient.setEditable(false);
 		editTextIdClient.setColumns(10);
 		editTextIdClient.setBounds(593, 34, 123, 25);
+		editTextIdClient.setHorizontalAlignment(JTextField.CENTER);
 		panel_1.add(editTextIdClient);
 
 		JScrollPane scrollPaneToTable = new JScrollPane();
@@ -221,11 +390,11 @@ public class OsFragment extends JInternalFrame {
 		table = new LockTableEdit(table, title).lockTable();
 		scrollPaneToTable.setViewportView(table);
 
-		JLabel lblStatus = new JLabel("Status");
+		JLabel lblStatus = new JLabel("*" + mStrings.STATUS);
 		lblStatus.setBounds(38, 227, 70, 15);
 		getContentPane().add(lblStatus);
 
-		JComboBox comboBoxStatus = new JComboBox();
+		comboBoxStatus = new JComboBox();
 		comboBoxStatus.setBounds(126, 222, 246, 24);
 		// Setar um array existetente em um comboBox
 		comboBoxStatus.setModel(new DefaultComboBoxModel(mStrings.LIST_STATUS_OS));

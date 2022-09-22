@@ -9,7 +9,7 @@ public class Os {
 	private String defect;
 	private String service;
 	private String technician;
-	private String price;
+	private double price;
 	private int idCli;
 	private int status;
 	private int serviceType;
@@ -18,11 +18,24 @@ public class Os {
 		super();
 	}
 
-	public Os(int id, String data, String equipment, String defect, String service, String technician, String price,
+	public Os(int id, String data, String equipment, String defect, String service, String technician, Double price,
 			int idCli, int status, int serviceType) {
 		super();
 		this.id = id;
 		this.data = data;
+		this.equipment = equipment;
+		this.defect = defect;
+		this.service = service;
+		this.technician = technician;
+		this.price = price;
+		this.idCli = idCli;
+		this.status = status;
+		this.serviceType = serviceType;
+	}
+
+	public Os(String equipment, String defect, String service, String technician, Double price, int idCli, int status,
+			int serviceType) {
+		super();
 		this.equipment = equipment;
 		this.defect = defect;
 		this.service = service;
@@ -81,11 +94,11 @@ public class Os {
 		this.technician = technician;
 	}
 
-	public String getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(String price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -122,7 +135,9 @@ public class Os {
 		result = prime * result + ((equipment == null) ? 0 : equipment.hashCode());
 		result = prime * result + id;
 		result = prime * result + idCli;
-		result = prime * result + ((price == null) ? 0 : price.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(price);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((service == null) ? 0 : service.hashCode());
 		result = prime * result + serviceType;
 		result = prime * result + status;
@@ -158,10 +173,7 @@ public class Os {
 			return false;
 		if (idCli != other.idCli)
 			return false;
-		if (price == null) {
-			if (other.price != null)
-				return false;
-		} else if (!price.equals(other.price))
+		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
 			return false;
 		if (service == null) {
 			if (other.service != null)
@@ -180,4 +192,7 @@ public class Os {
 		return true;
 	}
 
+	
+	
+	
 }
