@@ -1,11 +1,14 @@
 package com.mtech.services.viewmodel;
 
 import java.awt.Window;
+import java.sql.ResultSet;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.mtech.services.dao.DaoClient;
+import com.mtech.services.util.GenerateReport;
 import com.mtech.services.util.OpenActivity;
 import com.mtech.services.util.OpenFragment;
 import com.mtech.services.values.MyStrings;
@@ -44,6 +47,16 @@ public class MainViewModel {
 
 	public void openOsFragment(JDesktopPane pane) {
 		new OpenFragment(pane).openOsFragment();
+	}
+
+	public void generateClientReport() {
+
+	}
+
+	public void generateServicesReport() {
+
+		new GenerateReport().generateClientReport(mStrings.SERVICE_REPORT);
+
 	}
 
 }

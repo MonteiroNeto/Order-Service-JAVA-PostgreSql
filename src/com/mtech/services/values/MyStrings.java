@@ -52,6 +52,7 @@ public class MyStrings {
 	public static final String ERROR_UPDATE_CLIENT = "ERROR UPDATE CLIENT";
 	public static final String ERROR_INSERT_OS = "ERROR INSERT OS";
 	public static final String ERROR_UPDATE_OS = "ERROR UPDATE OS";
+	public static final String ERROR_FIND_LAST_OS = "ERROR FIND LAST OS";
 	public static final String ID_FIELD_IS_EMPTY = "ID field is empty";
 	public static final String NAME_FIELD_IS_EMPTY = "Name field is empty";
 	public static final String PHONE_FIELD_IS_EMPTY = "Phone field is empty";
@@ -83,6 +84,14 @@ public class MyStrings {
 	public static final String PRINT = "Print";
 	public static final String STATUS = "STATUS";
 	public static final String ENTER_OS_NUMBER = "Enter the OS number";
+	public static final String NOTHING_TO_UPDATE = "there is nothing to update";
+	public static final String OS_REPORT = "OS Report";
+	public static final String SERVICE_REPORT = "Service Report";
+	public static final String CLIENT_REPORT = "Client Report";
+	public static final String NEXT_OS = "Next OS: ";
+	public static final String ENTER_VALID_PRICE = "enter a valid PRICE";
+	
+	
 	
 	
 

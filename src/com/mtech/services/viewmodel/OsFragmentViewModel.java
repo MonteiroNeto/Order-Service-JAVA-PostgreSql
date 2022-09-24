@@ -20,10 +20,10 @@ public class OsFragmentViewModel {
 		String message = new DaoOs().save(os);
 
 		if (message.equals("")) {
-			JOptionPane.showConfirmDialog(null, mStrings.SUCCESS, mStrings.SUCCESS, JOptionPane.CLOSED_OPTION);
+			showDialog(mStrings.SUCCESS, mStrings.SUCCESS);
 			return true;
 		} else {
-			JOptionPane.showConfirmDialog(null, message, mStrings.ERROR, JOptionPane.CLOSED_OPTION);
+			showDialog(mStrings.ERROR, message);
 
 			return false;
 		}
@@ -36,17 +36,59 @@ public class OsFragmentViewModel {
 		if (os != null) {
 			return os;
 		} else {
-			JOptionPane.showConfirmDialog(null, mStrings.OS_NOT_FOUND, mStrings.ERROR, JOptionPane.CLOSED_OPTION);
+			showDialog(mStrings.ERROR, mStrings.OS_NOT_FOUND);
 			return null;
 		}
 
 	}
 
-	public void editOs() {
+	public Boolean updateOs(Os os) {
+		String message = new DaoOs().update(os);
+
+		if (message.equals("")) {
+			showDialog(mStrings.SUCCESS, mStrings.SUCCESS);
+			return true;
+		} else {
+
+			showDialog(mStrings.ERROR, message);
+			return false;
+		}
+	}
+
+	public Boolean removeOs(int idOs) {
+
+		int confirmed = JOptionPane.showConfirmDialog(null, mStrings.ARE_YOU_SURE_REMOVE, mStrings.WARNING,
+				JOptionPane.YES_NO_OPTION);
+
+		if (confirmed == JOptionPane.YES_OPTION) {
+			String message = new DaoOs().remove(idOs);
+
+			if (message.equals("")) {
+				showDialog(mStrings.SUCCESS, mStrings.SUCCESS);
+				return true;
+			} else {
+				showDialog(mStrings.ERROR, message);
+				return false;
+			}
+		} else {
+			return false;
+		}
 
 	}
 
-	public void removeOs() {
+	public String getNextOs() {
+		String message = new DaoOs().getNextOs();
 
+		if (message.equals(mStrings.ERROR_FIND_LAST_OS)) {
+
+			return message;
+		} else {
+			return message;
+		}
+
+	}
+
+	private void showDialog(String title, String message) {
+		JOptionPane.showConfirmDialog(null, message, title, JOptionPane.CLOSED_OPTION);
 	}
 }

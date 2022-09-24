@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 
 import com.mtech.services.model.User;
 import com.mtech.services.ui.fragments.UsersFragment;
+import com.mtech.services.util.GenerateReport;
 import com.mtech.services.util.GetDate;
 import com.mtech.services.values.MyStrings;
 import com.mtech.services.viewmodel.MainViewModel;
@@ -75,7 +76,24 @@ public class MainActivity extends JFrame {
 		onClickUsers();
 		onCLickClient();
 		onClickOs();
+		onclickGenerateServiceReport();
 
+	}
+
+	private void onclickGenerateServiceReport() {
+		iMnRepoService.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				generateServiceReport();
+				
+			}
+		});
+		
+	}
+
+	protected void generateServiceReport() {
+		new MainViewModel(activity).generateServicesReport();
+		
 	}
 
 	private void onClickOs() {

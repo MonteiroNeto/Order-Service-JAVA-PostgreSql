@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import java.awt.Font;
 
 public class OsFragment extends JInternalFrame {
 	private MyStrings mStrings = new MyStrings();
@@ -56,6 +57,7 @@ public class OsFragment extends JInternalFrame {
 	private JButton btnPrint;
 	private JComboBox comboBoxStatus;
 	private JRadioButton radioBtnBudget, radioBtnOrderService;
+	private JLabel tvNextOs;
 
 	/**
 	 * Launch the application.
@@ -83,6 +85,87 @@ public class OsFragment extends JInternalFrame {
 		onClickBtnSaveOs();
 		setDate();
 		onclickBtnFindOs();
+		onClickBtnUpdate();
+		onClickBtnRemove();
+
+		desableBtns();
+		setNextOs();
+
+	}
+
+	private void setNextOs() {
+		editTextPrice.setText("0.0");
+		String nextOsToValidation = new OsFragmentViewModel().getNextOs();
+
+		int nextOs = validationId(nextOsToValidation);
+
+		if (nextOs > 0) {
+			nextOs++;
+			tvNextOs.setText(mStrings.NEXT_OS + nextOs);
+		}
+
+	}
+
+	private void onClickBtnRemove() {
+		btnRemove.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				removeOs();
+			}
+		});
+
+	}
+
+	protected void removeOs() {
+		String idForValidation = editTextIdOs.getText();
+
+		int idOs = validationId(idForValidation);
+
+		if (idOs > 0) {
+
+			Boolean removed = new OsFragmentViewModel().removeOs(idOs);
+			if (removed) {
+				clearForm();
+
+			}
+
+		} else if (idForValidation != null) {
+			JOptionPane.showMessageDialog(null, mStrings.INVALID_ID);
+		}
+
+	}
+
+	private void onClickBtnUpdate() {
+		btnEdit.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (editTextIdOs.getText().isBlank()) {
+					JOptionPane.showConfirmDialog(null, mStrings.NOTHING_TO_UPDATE, mStrings.WARNING,
+							JOptionPane.CLOSED_OPTION);
+				} else {
+					updateOs();
+				}
+
+			}
+		});
+
+	}
+
+	protected void updateOs() {
+		String message = validateForm();
+
+		if (message.equals("")) {
+			Os os = getOsEditOfForm();
+			Boolean updated = new OsFragmentViewModel().updateOs(os);
+			if (updated) {
+				clearForm();
+
+			}
+		} else {
+			JOptionPane.showConfirmDialog(null, message, mStrings.ERROR, JOptionPane.CLOSED_OPTION);
+		}
 
 	}
 
@@ -98,9 +181,8 @@ public class OsFragment extends JInternalFrame {
 	}
 
 	protected void findOs() {
-		JOptionPane jPane = new JOptionPane();
 
-		String idForValidation = jPane.showInputDialog(null, mStrings.ENTER_OS_NUMBER);
+		String idForValidation = JOptionPane.showInputDialog(null, mStrings.ENTER_OS_NUMBER);
 
 		int idOs = validationId(idForValidation);
 
@@ -109,6 +191,7 @@ public class OsFragment extends JInternalFrame {
 			Os osReceived = new OsFragmentViewModel().findOs(idOs);
 			if (osReceived != null) {
 				sendTextToForm(osReceived);
+				enableBtns();
 			}
 
 		} else if (idForValidation != null) {
@@ -156,8 +239,6 @@ public class OsFragment extends JInternalFrame {
 
 	private void clearForm() {
 		editTextIdOs.setText("");
-		radioBtnBudget.setSelected(false);
-		radioBtnOrderService.setSelected(false);
 		editTextIdClient.setText("");
 		editTextFindClient.setEnabled(true);
 		btnAdd.setEnabled(true);
@@ -166,7 +247,28 @@ public class OsFragment extends JInternalFrame {
 		editTextDefect.setText("");
 		editTextService.setText("");
 		editTextTechnician.setText("");
-		editTextPrice.setText("");
+		editTextPrice.setText("0.0");
+
+		desableBtns();
+
+	}
+
+	private void desableBtns() {
+		btnEdit.setEnabled(false);
+		btnRemove.setEnabled(false);
+		btnPrint.setEnabled(false);
+		radioBtnBudget.setSelected(false);
+		radioBtnOrderService.setSelected(false);
+		comboBoxStatus.setSelectedIndex(0);
+		btnAdd.setEnabled(true);
+
+	}
+
+	private void enableBtns() {
+		btnEdit.setEnabled(true);
+		btnRemove.setEnabled(true);
+		btnPrint.setEnabled(true);
+		btnAdd.setEnabled(false);
 
 	}
 
@@ -191,7 +293,13 @@ public class OsFragment extends JInternalFrame {
 
 		if (message.equals("")) {
 			Os os = getOsEditOfForm();
-			new OsFragmentViewModel().addOs(os);
+			Boolean saved = new OsFragmentViewModel().addOs(os);
+			if (saved) {
+				clearForm();
+			}
+
+			setNextOs();
+
 		} else {
 			JOptionPane.showConfirmDialog(null, message, mStrings.ERROR, JOptionPane.CLOSED_OPTION);
 		}
@@ -199,6 +307,7 @@ public class OsFragment extends JInternalFrame {
 	}
 
 	private String validateForm() {
+		String messagePrice = validatePrice();
 		String message = "";
 
 		if (editTextIdClient.getText().isBlank()) {
@@ -211,6 +320,8 @@ public class OsFragment extends JInternalFrame {
 			message = mStrings.EQUIPMENT_FIELD_IS_EMPTY;
 		} else if (editTextDefect.getText().isBlank()) {
 			message = mStrings.DEFECT_FIELD_IS_EMPTY;
+		} else if (!messagePrice.equals("") && !messagePrice.equals("0.0")) {
+			message = mStrings.ENTER_VALID_PRICE;
 		} else {
 			message = "";
 		}
@@ -220,8 +331,22 @@ public class OsFragment extends JInternalFrame {
 	}
 
 	private Os getOsEditOfForm() {
-		double price = Double.parseDouble(editTextPrice.getText().replace(",", "."));
+
+		//IF ElSE para definir um valor padrao para o preço caso esteja em branco o edit text
+		double price;
+		if (editTextPrice.getText().isBlank()) {
+			price = 0.0;
+		} else {
+			price = Double.parseDouble(editTextPrice.getText().replace(",", "."));
+		}
+
 		int type_service = 1;
+
+		// validacao do ID: usado no metodo update
+		int idOs = 0;
+		if (!editTextIdOs.getText().isBlank()) {
+			idOs = Integer.parseInt(editTextIdOs.getText());
+		}
 
 		// obter a posicao do radio button que esta selecionado
 		if (radioBtnBudget.isSelected()) {
@@ -230,11 +355,32 @@ public class OsFragment extends JInternalFrame {
 			type_service = 2;
 		}
 
-		Os os = new Os(editTextEquipment.getText(), editTextDefect.getText(), editTextService.getText(),
-				editTextTechnician.getText(), price, Integer.parseInt(editTextIdClient.getText()),
-				comboBoxStatus.getSelectedIndex(), type_service);
+		Os os = new Os(idOs, editTextDate.getText(), editTextEquipment.getText(), editTextDefect.getText(),
+				editTextService.getText(), editTextTechnician.getText(), price,
+				Integer.parseInt(editTextIdClient.getText()), comboBoxStatus.getSelectedIndex(), type_service);
 
 		return os;
+	}
+
+	// validar o campo de texto caso seja nulo, ou seja digitado letra
+	private String validatePrice() {
+		String price;
+		// IF else para porque o valor não pode ir nulo
+		if (editTextPrice.getText().isBlank()) {
+			return price = "0.0";
+		} else {
+			try {
+				// esta conversao é apenas para validacao
+				double priceToConvert = Double.parseDouble(editTextPrice.getText().replace(",", "."));
+				price = "";
+				return price;
+			} catch (Exception e) {
+				return mStrings.ENTER_VALID_PRICE;
+
+			}
+
+		}
+
 	}
 
 	private void onClickTablePosition() {
@@ -474,6 +620,12 @@ public class OsFragment extends JInternalFrame {
 		btnPrint.setIcon(new ImageIcon(OsFragment.class.getResource("/com/mtech/services/icon/ic_print.png")));
 		btnPrint.setBounds(1010, 614, 80, 80);
 		getContentPane().add(btnPrint);
+
+		tvNextOs = new JLabel("Next OS:");
+		tvNextOs.setFont(new Font("Dialog", Font.BOLD, 18));
+		tvNextOs.setHorizontalAlignment((int) CENTER_ALIGNMENT);
+		tvNextOs.setBounds(38, 290, 1137, 15);
+		getContentPane().add(tvNextOs);
 
 	}
 }
