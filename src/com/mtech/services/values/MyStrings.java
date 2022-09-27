@@ -1,6 +1,8 @@
 package com.mtech.services.values;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.mtech.services.model.User;
 
@@ -75,7 +77,7 @@ public class MyStrings {
 	public static final String SERVICE_TYPE = "SERVICE TYPE";
 	public static final String BUDGET = "Budget";
 	public static final String ORDER_SERVICE = "Order of Service";
-	public static final String NUMBER_OS = "Nº OS";
+	public static final String NUMBER_OS = "Nº OS: ";
 	public static final String EQUIPMENT = "Equipment";
 	public static final String DEFECT = "Defect";
 	public static final String TECHNICIAN = "Technician";
@@ -90,14 +92,23 @@ public class MyStrings {
 	public static final String CLIENT_REPORT = "Client Report";
 	public static final String NEXT_OS = "Next OS: ";
 	public static final String ENTER_VALID_PRICE = "enter a valid PRICE";
-	
-	
-	
+	public static final String DO_YOU_WANT_ISSUE_REPORT = "do you really want to issue the report? ";
+	public static final String CLIENT_CODE = "Client code: ";
 	
 
 	public static final String[] LIST_PERFIL = { "user", "admin" };
+	public static final String[] LIST_SERVICE_TYPE = { "Budget", "Order of Service" };
 	public static final String[] LIST_STATUS_OS = { "Selecione status", "ENTREGA OK", "Orçamento Reprovado",
 			"Aguardando Aprovação", "Aguardando Peças", "Abandonado pelo cliente", "Na Bancada", "Retornou" };
+
+	public static final ArrayList<String> LIST_REPORT_CLIENT_TITLE_COLUMN_TABLE = new ArrayList<String>(
+			Arrays.asList("ID", "NAME", "ADRESS", "PHONE", "EMAIL"));
+
+	public static final ArrayList<String> LIST_REPORT_OS_TITLE_COLUMN_TABLE = new ArrayList<String>(
+			Arrays.asList("ID", "DATE", "EQUIPAMENT", "PRICE", "STATUS", "CLIENT", "PHONE"));
+
+	public static final ArrayList<String> LIST_REPORT_OS_CLIENT_TITLE_COLUMN_TABLE = new ArrayList<String>(
+			Arrays.asList("DATE", "SERVICE TYPE", "STATUS", "EQUIPAMENT", "DEFECT", "SERVICE"));
 
 	/*
 	 * LINKS DE APOIO

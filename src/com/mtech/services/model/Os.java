@@ -14,6 +14,11 @@ public class Os {
 	private int status;
 	private int serviceType;
 
+	// Inner Join
+	private String nameCli;
+	private String phoneCli;
+	private String statusDescription;
+
 	public Os() {
 		super();
 	}
@@ -44,6 +49,31 @@ public class Os {
 		this.idCli = idCli;
 		this.status = status;
 		this.serviceType = serviceType;
+	}
+
+	// INNER JOIN
+	public Os(int id, String data, String equipment, double price, String statusDescription, String nameCli,
+			String phoneCli) {
+		super();
+		this.id = id;
+		this.data = data;
+		this.equipment = equipment;
+		this.price = price;
+		this.statusDescription = statusDescription;
+		this.nameCli = nameCli;
+		this.phoneCli = phoneCli;
+	}
+
+	public String getNameCli() {
+		return nameCli;
+	}
+
+	public String getPhoneCli() {
+		return phoneCli;
+	}
+
+	public String getStatuDescription() {
+		return statusDescription;
 	}
 
 	public int getId() {
@@ -98,7 +128,7 @@ public class Os {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
@@ -192,7 +222,4 @@ public class Os {
 		return true;
 	}
 
-	
-	
-	
 }

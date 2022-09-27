@@ -7,11 +7,11 @@ public class Service {
 	private Connection connection;
 
 
-    private final String host = "localHost";
+    private final String host = "locahost";
     private final String database = "dbinfox";
     private final int port = 5432;
-    private final String user = "UserDb";
-    private final String pass = "SenhaDb";
+    private final String user = "meuuser";
+    private final String pass = "minhasenha";
 
 
     private String url = "jdbc:postgresql://%s:%d/%s";

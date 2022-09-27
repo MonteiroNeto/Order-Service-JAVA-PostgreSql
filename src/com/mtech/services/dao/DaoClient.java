@@ -3,6 +3,8 @@ package com.mtech.services.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.mtech.services.model.Client;
 import com.mtech.services.values.MyStrings;
@@ -118,6 +120,28 @@ public class DaoClient {
 		title = id + name + adress + phone + email;
 
 		return title;
+	}
+
+	public ArrayList<Client> getAllCLient() {
+		ArrayList<Client> clients = new ArrayList<Client>();
+		Client client = null;
+
+		resultSet = findClientForName("");
+		try {
+
+			while (resultSet.next()) {
+				client = new Client(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+						resultSet.getString(4), resultSet.getString(5));
+
+				clients.add(client);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return clients;
 	}
 
 }

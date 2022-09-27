@@ -2,12 +2,16 @@ package com.mtech.services.viewmodel;
 
 import java.awt.Window;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.mtech.services.dao.DaoClient;
+import com.mtech.services.dao.DaoOs;
+import com.mtech.services.model.Client;
+import com.mtech.services.model.Os;
 import com.mtech.services.util.GenerateReport;
 import com.mtech.services.util.OpenActivity;
 import com.mtech.services.util.OpenFragment;
@@ -51,11 +55,30 @@ public class MainViewModel {
 
 	public void generateClientReport() {
 
+		int reported = JOptionPane.showConfirmDialog(null, mStrings.DO_YOU_WANT_ISSUE_REPORT, mStrings.REPORT,
+				JOptionPane.YES_NO_OPTION);
+
+		if (reported == JOptionPane.YES_OPTION) {
+			ArrayList<Client> clients = new DaoClient().getAllCLient();
+
+			new GenerateReport(mStrings.CLIENT).generateClientReport(mStrings.LIST_REPORT_CLIENT_TITLE_COLUMN_TABLE,
+					clients);
+		}
+
 	}
 
 	public void generateServicesReport() {
 
-		new GenerateReport().generateClientReport(mStrings.SERVICE_REPORT);
+		int reported = JOptionPane.showConfirmDialog(null, mStrings.DO_YOU_WANT_ISSUE_REPORT, mStrings.REPORT,
+				JOptionPane.YES_NO_OPTION);
+
+		if (reported == JOptionPane.YES_OPTION) {
+
+			ArrayList<Os> os_s = new DaoOs().getInnerJoinOsAndClient();
+
+			new GenerateReport(mStrings.OS).generateOsReport(mStrings.LIST_REPORT_OS_TITLE_COLUMN_TABLE, os_s);
+
+		}
 
 	}
 

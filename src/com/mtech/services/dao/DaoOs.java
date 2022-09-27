@@ -8,9 +8,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.mtech.services.model.Os;
 import com.mtech.services.values.MyStrings;
+import com.mtech.services.values.TblReference;
+import com.mtech.services.values.TblReference.TblClient;
 import com.mtech.services.values.TblReference.TblOs;
 
 import net.proteanit.sql.JTableUpdateDb;
@@ -158,7 +162,7 @@ public class DaoOs {
 		try {
 			ps = connection.prepareStatement(sql);
 			resultSet = ps.executeQuery();
-
+			connection.close();
 			if (resultSet != null && resultSet.next()) {
 				return message = resultSet.getString(1);
 			} else {
@@ -170,6 +174,40 @@ public class DaoOs {
 			return mStrings.ERROR_FIND_LAST_OS + "***" + e.toString();
 
 		}
+
+	}
+
+	public ArrayList<Os> getInnerJoinOsAndClient() {
+		ArrayList<Os> os_s = new ArrayList<Os>();
+		String[] statusDescription = mStrings.LIST_STATUS_OS;
+		Os os = null;
+		TblClient tblClientReference = null;
+
+		String sql = "SELECT OS." + tblReference.COLUMN_ID_OS + "," + tblReference.COLUMN_DATA_OS + ","
+				+ tblReference.COLUMN_EQUIPAMENTO + "," + tblReference.COLUMN_VALOR + "," + tblReference.COLUMN_STATUS
+				+ ",CLI." + tblClientReference.COLUMN_NAME_CLI + "," + tblClientReference.COLUMN_PHONE_CLI + " FROM "
+				+ tblReference.TBL_NAME + " AS OS INNER JOIN " + tblClientReference.TBL_NAME + " AS CLI ON (OS."
+				+ tblReference.COLUMN_ID_CLIENTE + " = CLI." + tblClientReference.COLUMN_ID_CLI + ");";
+
+		try {
+			ps = connection.prepareStatement(sql);
+			resultSet = ps.executeQuery();
+			while (resultSet.next()) {
+				String status = statusDescription[resultSet.getInt(5)];
+
+				os = new Os(resultSet.getInt(1), String.valueOf(resultSet.getDate(2)), resultSet.getString(3),
+						resultSet.getDouble(4), status, resultSet.getString(6), resultSet.getString(7));
+
+				os_s.add(os);
+			}
+
+			connection.close();
+
+		} catch (Exception e) {
+			
+		}
+
+		return os_s;
 
 	}
 

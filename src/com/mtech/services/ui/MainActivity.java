@@ -34,7 +34,7 @@ public class MainActivity extends JFrame {
 	private MyStrings mString = new MyStrings();
 	private JMenuBar menuTopBar;
 	private JMenu mnRegistration, mnHelp, mnOption;
-	private JMenuItem iMnRegisClient, iMnRegisOs, iMnRepoService, iMnHelpAbout, iMnOptExit;
+	private JMenuItem iMnRegisClient, iMnRegisOs, iMnRepoService, iMnRepoClient, iMnHelpAbout, iMnOptExit;
 	private JLabel tvDate;
 	public JLabel tvUser;
 	private JDesktopPane pane;
@@ -77,45 +77,63 @@ public class MainActivity extends JFrame {
 		onCLickClient();
 		onClickOs();
 		onclickGenerateServiceReport();
+		onclickGenerateClientReport();
 
+	}
+
+	private void onclickGenerateClientReport() {
+		iMnRepoClient.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				generateClientReport();
+				
+			}
+		});
+		
+	}
+
+	protected void generateClientReport() {
+		new MainViewModel(activity).generateClientReport();
+		
 	}
 
 	private void onclickGenerateServiceReport() {
 		iMnRepoService.addActionListener(new ActionListener() {
-			
+
 			public void actionPerformed(ActionEvent arg0) {
 				generateServiceReport();
-				
+
 			}
 		});
-		
+
 	}
 
 	protected void generateServiceReport() {
 		new MainViewModel(activity).generateServicesReport();
-		
+
 	}
 
 	private void onClickOs() {
 		iMnRegisOs.addActionListener(new ActionListener() {
-			
+
 			public void actionPerformed(ActionEvent arg0) {
 				mainViewModel.openOsFragment(pane);
-				
+
 			}
 		});
-		
+
 	}
 
 	private void onCLickClient() {
 		iMnRegisClient.addActionListener(new ActionListener() {
-			
+
 			public void actionPerformed(ActionEvent arg0) {
 				mainViewModel.openClientFragment(pane);
-				
+
 			}
 		});
-		
+
 	}
 
 	private void onClickUsers() {
@@ -227,6 +245,10 @@ public class MainActivity extends JFrame {
 		iMnRepoService = new JMenuItem(mString.SERVICES);
 		iMnRepoService.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
 		mnReport.add(iMnRepoService);
+
+		iMnRepoClient = new JMenuItem(mString.CLIENT);
+		iMnRepoClient.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_DOWN_MASK));
+		mnReport.add(iMnRepoClient);
 	}
 
 	private void menuHelp() {

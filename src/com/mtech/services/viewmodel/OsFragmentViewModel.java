@@ -1,12 +1,14 @@
 package com.mtech.services.viewmodel;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 import com.mtech.services.dao.DaoClient;
 import com.mtech.services.dao.DaoOs;
 import com.mtech.services.model.Os;
+import com.mtech.services.util.GenerateReport;
 import com.mtech.services.values.MyStrings;
 
 public class OsFragmentViewModel {
@@ -84,6 +86,22 @@ public class OsFragmentViewModel {
 			return message;
 		} else {
 			return message;
+		}
+
+	}
+
+	public void printOs(int idos) {
+
+		int reported = JOptionPane.showConfirmDialog(null, mStrings.DO_YOU_WANT_ISSUE_REPORT, mStrings.REPORT,
+				JOptionPane.YES_NO_OPTION);
+
+		if (reported == JOptionPane.YES_OPTION) {
+
+			Os os = new DaoOs().findOs(idos);
+
+			new GenerateReport(mStrings.OS).generateOsToClientReport(mStrings.LIST_REPORT_OS_CLIENT_TITLE_COLUMN_TABLE,
+					os);
+
 		}
 
 	}

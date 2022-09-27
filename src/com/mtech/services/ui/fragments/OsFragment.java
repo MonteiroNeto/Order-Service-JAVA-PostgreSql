@@ -12,6 +12,7 @@ import java.sql.Savepoint;
 
 import javax.swing.JInternalFrame;
 
+import com.itextpdf.text.xml.simpleparser.NewLineHandler;
 import com.mtech.services.model.Os;
 import com.mtech.services.util.GetDate;
 import com.mtech.services.util.LockTableEdit;
@@ -90,6 +91,19 @@ public class OsFragment extends JInternalFrame {
 
 		desableBtns();
 		setNextOs();
+		onClickPrintOs();
+
+	}
+
+	private void onClickPrintOs() {
+		btnPrint.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new OsFragmentViewModel().printOs(Integer.parseInt(editTextIdOs.getText()));
+
+			}
+		});
 
 	}
 
@@ -332,7 +346,8 @@ public class OsFragment extends JInternalFrame {
 
 	private Os getOsEditOfForm() {
 
-		//IF ElSE para definir um valor padrao para o preço caso esteja em branco o edit text
+		// IF ElSE para definir um valor padrao para o preço caso esteja em branco o
+		// edit text
 		double price;
 		if (editTextPrice.getText().isBlank()) {
 			price = 0.0;
